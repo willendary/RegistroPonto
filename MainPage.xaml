@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RegistroPonto.MainPage"
+             xmlns:viewModels="clr-namespace:RegistroPonto.ViewModels"
+             Title="Registro de Ponto">
+
+    <ContentPage.BindingContext>
+        <viewModels:MainPageViewModel/>
+    </ContentPage.BindingContext>
+
+    <StackLayout Padding="20"
+                 Spacing="15">
+        <Label Text="Registro de Ponto"
+               FontSize="Large"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+
+        <Button Text="Registrar Entrada"
+                Command="{Binding RegistrarEntradaCommand}"/>
+        <Button Text="Registrar Saída"
+                Command="{Binding RegistrarSaidaCommand}"/>
+
+        <Label Text="{Binding HorasTrabalhadas}"
+               FontSize="Medium"
+               HorizontalOptions="Center"/>
+        <Button Text="Calcular Horas"
+                Command="{Binding CalcularHorasCommand}"/>
+
+        <Label Text="Relatório de Ponto"
+               FontSize="Large"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+        <Button Text="Exportar Relatório"
+                Command="{Binding ExportarRelatorioCommand}"/>
+
+        <ListView ItemsSource="{Binding Registros}"
+                  SeparatorVisibility="None"
+                  HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal"
+                                     Padding="10"
+                                     Spacing="10">
+                            <Label Text="{Binding Tipo}"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding Horario, StringFormat='{0:HH:mm:ss}'}"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
