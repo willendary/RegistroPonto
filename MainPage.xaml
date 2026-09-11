@@ -3,65 +3,152 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RegistroPonto.MainPage"
              xmlns:viewModels="clr-namespace:RegistroPonto.ViewModels"
-             Title="Meu Ponto">
+             x:Name="RootPage"
+             Title="Meu Ponto"
+             BackgroundColor="{StaticResource Background}">
 
     <ContentPage.BindingContext>
-        <viewModels:MainPageViewModel/>
+        <viewModels:MainPageViewModel />
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <VerticalStackLayout Padding="24,28" Spacing="20">
-            <VerticalStackLayout Spacing="4">
-                <Label Text="Meu Ponto" Style="{StaticResource TitleLabel}" />
-                <Label Text="Registre sua jornada de forma simples e rápida" Style="{StaticResource SubtitleLabel}" />
-            </VerticalStackLayout>
+        <VerticalStackLayout Padding="20,24,20,32" Spacing="16">
 
-            <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="20">
-                <Border.StrokeShape><RoundRectangle CornerRadius="20" /></Border.StrokeShape>
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Jornada de hoje" TextColor="{StaticResource TextSecondary}" FontSize="14" />
-                    <Label Text="{Binding HorasTrabalhadas}" TextColor="{StaticResource TextPrimary}" FontSize="26" FontAttributes="Bold" />
+            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="Meu Ponto" Style="{StaticResource TitleLabel}" />
+                    <Label Text="Sua jornada, organizada em um só lugar" Style="{StaticResource SubtitleLabel}" />
+                </VerticalStackLayout>
+                <Border Grid.Column="1" WidthRequest="46" HeightRequest="46" BackgroundColor="{StaticResource Primary}" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="23" />
+                    </Border.StrokeShape>
+                    <Label Text="✓" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+            </Grid>
+
+            <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="18">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="22" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Jornada selecionada" TextColor="{StaticResource TextSecondary}" FontSize="13" />
+                            <Label Text="{Binding DataSelecionadaTexto}" TextColor="{StaticResource TextPrimary}" FontSize="17" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="1" Text="{Binding StatusJornada}" TextColor="{StaticResource Primary}" FontSize="12" VerticalOptions="Center" />
+                    </Grid>
+
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Trabalhado" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                            <Label Text="{Binding HorasTrabalhadas}" TextColor="{StaticResource TextPrimary}" FontSize="30" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Saldo do dia" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                            <Label Text="{Binding SaldoDia}" TextColor="{StaticResource Primary}" FontSize="30" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <Button Grid.Column="0" Text="⏱  Entrada" Command="{Binding RegistrarEntradaCommand}" BackgroundColor="{StaticResource Success}" />
                         <Button Grid.Column="1" Text="Saída  →" Command="{Binding RegistrarSaidaCommand}" BackgroundColor="{StaticResource Danger}" />
                     </Grid>
                 </VerticalStackLayout>
             </Border>
 
-            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                <Label Text="Registros" Style="{StaticResource TitleLabel}" FontSize="21" />
-                <Button Grid.Column="1" Text="Atualizar" Command="{Binding AtualizarCommand}" Padding="12,8" FontSize="13" />
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <Button Text="‹" Command="{Binding DiaAnteriorCommand}" WidthRequest="48" Padding="0" FontSize="24" />
+                <DatePicker Grid.Column="1" Date="{Binding DataSelecionada}" Format="dd/MM/yyyy" HorizontalOptions="Center" FontAttributes="Bold" />
+                <Button Grid.Column="2" Text="›" Command="{Binding ProximoDiaCommand}" WidthRequest="48" Padding="0" FontSize="24" />
+            </Grid>
+
+            <Button Text="Voltar para hoje" Command="{Binding HojeCommand}" HorizontalOptions="Center" Padding="16,8" FontSize="13" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" />
+
+            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center" Margin="0,4,0,0">
+                <Label Text="Registros do dia" Style="{StaticResource TitleLabel}" FontSize="21" />
+                <Button Grid.Column="1" Text="↻ Atualizar" Command="{Binding AtualizarCommand}" Padding="10,7" FontSize="12" />
             </Grid>
 
             <CollectionView ItemsSource="{Binding Registros}" SelectionMode="None">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout Padding="20" Spacing="8" HorizontalOptions="Center">
-                        <Label Text="Ainda não há registros" TextColor="{StaticResource TextSecondary}" FontSize="16" />
-                        <Label Text="Toque em Entrada para começar sua jornada." TextColor="{StaticResource TextSecondary}" FontSize="13" />
-                    </VerticalStackLayout>
+                    <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="22" Margin="0,4,0,0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                            <Label Text="Nenhum registro neste dia" TextColor="{StaticResource TextPrimary}" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                            <Label Text="Use Entrada para começar sua jornada." TextColor="{StaticResource TextSecondary}" FontSize="13" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Margin="0,0,0,10" Padding="16">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                        <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Margin="0,0,0,10" Padding="14">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                 <Border WidthRequest="42" HeightRequest="42" StrokeThickness="0" BackgroundColor="#EEF2FF" VerticalOptions="Center">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="21" /></Border.StrokeShape>
-                                    <Label Text="●" TextColor="{StaticResource Primary}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="21" />
+                                    </Border.StrokeShape>
+                                    <Label Text="●" TextColor="{StaticResource Primary}" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
                                     <Label Text="{Binding Tipo}" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="16" />
-                                    <Label Text="Hoje" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                                    <Label Text="{Binding Horario, StringFormat='{0:dd/MM/yyyy}'}" TextColor="{StaticResource TextSecondary}" FontSize="11" />
                                 </VerticalStackLayout>
-                                <Label Grid.Column="2" Text="{Binding Horario, StringFormat='{0:HH:mm:ss}'}" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="17" VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="2" Spacing="3" HorizontalOptions="End">
+                                    <Label Text="{Binding Horario, StringFormat='{0:HH:mm:ss}'}" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="17" HorizontalTextAlignment="End" />
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="4">
+                                        <Button Text="Editar" Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.EditarRegistroCommand}" CommandParameter="{Binding .}" Padding="5,2" FontSize="10" />
+                                        <Button Grid.Column="1" Text="Excluir" Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.ExcluirRegistroCommand}" CommandParameter="{Binding .}" Padding="5,2" FontSize="10" BackgroundColor="Transparent" TextColor="{StaticResource Danger}" />
+                                    </Grid>
+                                </VerticalStackLayout>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                <Button Text="Calcular horas" Command="{Binding CalcularHorasCommand}" />
+            <Label Text="Resumo do mês" Style="{StaticResource TitleLabel}" FontSize="21" Margin="0,6,0,0" />
+            <Label Text="{Binding DataSelecionada, StringFormat='{0:MMMM yyyy}'}" TextColor="{StaticResource TextSecondary}" FontSize="13" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="14" Margin="0,0,0,10">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="3">
+                        <Label Text="Total trabalhado" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                        <Label Text="{Binding TotalMes}" TextColor="{StaticResource TextPrimary}" FontSize="22" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="14" Margin="0,0,0,10">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="3">
+                        <Label Text="Dias trabalhados" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                        <Label Text="{Binding DiasTrabalhados}" TextColor="{StaticResource TextPrimary}" FontSize="22" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="14">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="3">
+                        <Label Text="Média diária" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                        <Label Text="{Binding MediaDiaria}" TextColor="{StaticResource TextPrimary}" FontSize="20" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="1" Grid.Row="1" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="14">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="3">
+                        <Label Text="Saldo do mês" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                        <Label Text="{Binding SaldoMes}" TextColor="{StaticResource Primary}" FontSize="20" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,4,0,0">
+                <Button Text="Recalcular" Command="{Binding CalcularHorasCommand}" />
                 <Button Grid.Column="1" Text="Exportar CSV" Command="{Binding ExportarRelatorioCommand}" BackgroundColor="#374151" />
             </Grid>
         </VerticalStackLayout>
