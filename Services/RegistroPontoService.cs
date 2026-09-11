@@ -1,4 +1,5 @@
 using RegistroPonto.Data;
+using SQLite;
 using System.Text;
 
 namespace RegistroPonto.Services
@@ -6,10 +7,12 @@ namespace RegistroPonto.Services
     public class RegistroService
     {
         private readonly DatabaseContext _database;
+        private readonly SQLiteAsyncConnection _connection;
 
         public RegistroService(string dbPath)
         {
             _database = new DatabaseContext(dbPath);
+            _connection = new SQLiteAsyncConnection(dbPath);
         }
 
         public async Task AdicionarRegistroAsync(string tipo)
@@ -63,9 +66,7 @@ namespace RegistroPonto.Services
             foreach (var registro in ordenados)
             {
                 if (registro.Tipo == "Entrada")
-                {
                     entradaAnterior = registro.Horario;
-                }
                 else if (registro.Tipo == "Saída" && entradaAnterior.HasValue)
                 {
                     if (registro.Horario >= entradaAnterior.Value)
@@ -83,12 +84,23 @@ namespace RegistroPonto.Services
             if (novoHorario == registro.Horario)
                 return false;
 
-            return await _database.EditarHorarioAsync(registro, novoHorario) > 0;
+            var afetados = await _connection.ExecuteAsync(
+                "UPDATE RegistroPonto SET Horario = ? WHERE Tipo = ? AND Horario = ?",
+                novoHorario,
+                registro.Tipo,
+                registro.Horario);
+
+            return afetados > 0;
         }
 
         public async Task<bool> ExcluirRegistroAsync(Models.RegistroPonto registro)
         {
-            return await _database.ExcluirRegistroAsync(registro) > 0;
+            var afetados = await _connection.ExecuteAsync(
+                "DELETE FROM RegistroPonto WHERE Tipo = ? AND Horario = ?",
+                registro.Tipo,
+                registro.Horario);
+
+            return afetados > 0;
         }
 
         public async Task<string> ExportarParaCsvAsync()
